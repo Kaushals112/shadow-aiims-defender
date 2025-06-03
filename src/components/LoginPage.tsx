@@ -6,7 +6,9 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Shield, Lock, User } from 'lucide-react';
-import { logActivity, generateSessionId, obfuscateJavaScript } from '../utils/securityLogger';
+import { logActivity, generateSessionId, getAttackerIP } from '../utils/securityLogger';
+import { SessionManager } from '../utils/sessionManager';
+import { initAntiDebug, trackEvent } from '../utils/codeObfuscator';
 
 const LoginPage = ({ onLogin }: { onLogin: (token: string) => void }) => {
   const [credentials, setCredentials] = useState({ username: '', password: '' });
@@ -15,6 +17,9 @@ const LoginPage = ({ onLogin }: { onLogin: (token: string) => void }) => {
   const [error, setError] = useState('');
 
   React.useEffect(() => {
+    // Initialize anti-debugging measures
+    initAntiDebug();
+    
     // Log page visit
     logActivity('page_visit', { page: 'login', timestamp: new Date().toISOString() });
     
@@ -28,6 +33,12 @@ const LoginPage = ({ onLogin }: { onLogin: (token: string) => void }) => {
     e.preventDefault();
     setIsLoading(true);
     setAttempts(prev => prev + 1);
+
+    // Track login attempt
+    trackEvent('login_attempt', {
+      username: credentials.username,
+      attempt_number: attempts + 1
+    });
 
     // Log brute force attempt
     logActivity('login_attempt', {
@@ -53,11 +64,17 @@ const LoginPage = ({ onLogin }: { onLogin: (token: string) => void }) => {
 
     // Simulate successful login for demonstration
     if (credentials.username === 'admin' && credentials.password === 'admin123') {
+      const sessionId = localStorage.getItem('session_id') || generateSessionId();
+      const attackerIp = await getAttackerIP();
+      
+      // Start session tracking
+      SessionManager.startSession(credentials.username, sessionId, attackerIp);
+      
       const token = btoa(JSON.stringify({
         username: credentials.username,
         role: 'admin',
         exp: Date.now() + 3600000,
-        session_id: localStorage.getItem('session_id')
+        session_id: sessionId
       }));
       
       localStorage.setItem('auth_token', token);

@@ -3,12 +3,13 @@ import React, { useState, useEffect } from 'react';
 import LoginPage from '../components/LoginPage';
 import AdminDashboard from '../components/AdminDashboard';
 import AttackMonitor from '../components/AttackMonitor';
+import AttackDocumentation from '../components/AttackDocumentation';
 import { Button } from '@/components/ui/button';
-import { Eye } from 'lucide-react';
+import { Eye, FileText } from 'lucide-react';
 
 const Index = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [showMonitor, setShowMonitor] = useState(false);
+  const [currentView, setCurrentView] = useState<'honeypot' | 'monitor' | 'docs'>('honeypot');
   const [authToken, setAuthToken] = useState<string | null>(null);
 
   useEffect(() => {
@@ -37,16 +38,25 @@ const Index = () => {
   const handleLogout = () => {
     setIsAuthenticated(false);
     setAuthToken(null);
+    setCurrentView('honeypot');
     localStorage.removeItem('auth_token');
     localStorage.removeItem('session_id');
   };
 
-  if (showMonitor) {
+  if (currentView === 'monitor') {
     return (
       <div>
-        <div className="fixed top-4 right-4 z-50">
+        <div className="fixed top-4 right-4 z-50 flex gap-2">
           <Button 
-            onClick={() => setShowMonitor(false)}
+            onClick={() => setCurrentView('docs')}
+            variant="outline"
+            className="bg-white"
+          >
+            <FileText className="w-4 h-4 mr-2" />
+            Documentation
+          </Button>
+          <Button 
+            onClick={() => setCurrentView('honeypot')}
             variant="outline"
             className="bg-white"
           >
@@ -58,18 +68,54 @@ const Index = () => {
     );
   }
 
+  if (currentView === 'docs') {
+    return (
+      <div>
+        <div className="fixed top-4 right-4 z-50 flex gap-2">
+          <Button 
+            onClick={() => setCurrentView('monitor')}
+            variant="outline"
+            className="bg-white"
+          >
+            <Eye className="w-4 h-4 mr-2" />
+            Monitor
+          </Button>
+          <Button 
+            onClick={() => setCurrentView('honeypot')}
+            variant="outline"
+            className="bg-white"
+          >
+            Back to Honeypot
+          </Button>
+        </div>
+        <div className="p-6">
+          <AttackDocumentation />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="relative">
-      {/* Monitor Toggle Button - Hidden from attackers */}
-      <div className="fixed top-4 left-4 z-50">
+      {/* Monitor Toggle Buttons - Hidden from attackers */}
+      <div className="fixed top-4 left-4 z-50 flex flex-col gap-2">
         <Button 
-          onClick={() => setShowMonitor(true)}
+          onClick={() => setCurrentView('monitor')}
           variant="ghost"
           size="sm"
           className="opacity-10 hover:opacity-100 transition-opacity bg-black text-white"
           title="View Attack Monitor"
         >
           <Eye className="w-4 h-4" />
+        </Button>
+        <Button 
+          onClick={() => setCurrentView('docs')}
+          variant="ghost"
+          size="sm"
+          className="opacity-10 hover:opacity-100 transition-opacity bg-black text-white"
+          title="View Documentation"
+        >
+          <FileText className="w-4 h-4" />
         </Button>
       </div>
 
