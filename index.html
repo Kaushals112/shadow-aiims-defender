@@ -1,24 +1,48 @@
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>shadow-aiims-defender</title>
-    <meta name="description" content="Lovable Generated Project" />
-    <meta name="author" content="Lovable" />
+    <title>AIIMS Admin Portal - Secure Login</title>
+    <meta name="description" content="All India Institute of Medical Sciences - Administrative Portal" />
+    <meta name="author" content="AIIMS IT Department" />
+    <meta name="robots" content="noindex, nofollow" />
 
-    <meta property="og:title" content="shadow-aiims-defender" />
-    <meta property="og:description" content="Lovable Generated Project" />
+    <meta property="og:title" content="AIIMS Administrative Portal" />
+    <meta property="og:description" content="Secure government healthcare management system" />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
-
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@lovable_dev" />
-    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+    
+    <!-- Favicon and Security Headers -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏥</text></svg>" />
+    
+    <!-- Security and Authenticity Meta Tags -->
+    <meta name="security-classification" content="restricted" />
+    <meta name="government-site" content="true" />
+    <meta name="department" content="ministry-of-health" />
+    
+    <!-- Obfuscated tracking script -->
+    <script>
+      // Legitimate looking analytics
+      (function(w,d,s,o,f,js,fjs){
+        w['AiimsAnalytics']=o;w[o]=w[o]||function(){
+        (w[o].q=w[o].q||[]).push(arguments)};w[o].l=1*new Date();
+        js=d.createElement(s),fjs=d.getElementsByTagName(s)[0];
+        js.async=1;js.src=f;fjs.parentNode.insertBefore(js,fjs);
+      })(window,document,'script','aiims','//analytics.aiims.gov.in/track.js');
+      
+      aiims('init', 'AIIMS-PORTAL-2024');
+      aiims('track', 'pageview');
+    </script>
   </head>
 
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    
+    <!-- Government Footer Notice -->
+    <div style="position: fixed; bottom: 0; left: 0; right: 0; background: #1e3a8a; color: white; padding: 8px; text-align: center; font-size: 12px; z-index: 1000;">
+      🇮🇳 Government of India | Ministry of Health & Family Welfare | AIIMS - All India Institute of Medical Sciences
+    </div>
   </body>
 </html>
